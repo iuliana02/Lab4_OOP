@@ -3,10 +3,10 @@
 using namespace std;
 
 //constructor
-Med::Med()
+Medikament::Medikament()
 {
 }
-Med::Med(string name, double konzentration, int menge, double preis)
+Medikament::Medikament(string name, double konzentration, int menge, double preis)
 {
 	this->name = name;
 	this->konzentration = konzentration;
@@ -15,40 +15,40 @@ Med::Med(string name, double konzentration, int menge, double preis)
 }
 
 //gettere
-string Med::get_name() const
+string Medikament::get_name() const
 {
 	return this->name;
 }
-double Med::konzentration() const
+double Medikament::get_konz() const
 {
 	return this->konzentration;
 }
-int Med::get_menge() const
+int Medikament::get_menge() const
 {
 	return this->menge;
 }
-double Med::get_preis() const
+double Medikament::get_preis() const
 {
 	return this->preis;
 }
 //settere
-void Med::set_name(string name) 
+void Medikament::set_name(string name) 
 {
 	this->name=name;
 }
-void Med::konzentration_s (double k) 
+void Medikament::set_konz (double k) 
 {
 	this->konzentration=k;
 }
-void Med::set_menge(int menge) 
+void Medikament::set_menge(int menge) 
 {
 	this->menge=menge;
 }
-void Med::set_preis (int preis) 
+void Medikament::set_preis (int preis) 
 {
 	this->preis=preis;
 }
 
-Med::~Med()
+Medikament::~Medikament()
 {
 }
