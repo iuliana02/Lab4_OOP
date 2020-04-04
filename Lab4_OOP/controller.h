@@ -9,4 +9,10 @@ public:
 
 	void add();
 	void remove();
+
+
+	void read_data(vector<Medikament>& v);
+	void write_data(vector<Medikament> v);
+
+
 };

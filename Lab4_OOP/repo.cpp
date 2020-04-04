@@ -8,36 +8,19 @@ Stock::Stock()
 {
 }
 
-Stock::~Stock()
-{
-}
-
 bool Stock::add_medicament(string name, double konz)
 {
 	int save_menge = 0, save_pos = 0; //pt functiile de redo/undo
 	bool ok = false; //cu ok verific daca medicamentul exista sau trebe sa il adaug
-	for (int i = 0; i <= medicamente.size(); i++)
+	for (int i = 0; i < medicamente.size(); i++)
 	{
-		if ((medicamente[i].get_name() == name) && (medicamente[i].get_konz() == konz))//daca medicamentul exista, actualizez doar cantitatea
-		{
-			cout << "Der Medikament existiert schon\n";
-			cout << "Welche Menge wollen Sie einfugen?\n";
-			int m;
-			cin >> m;
-			medicamente[i].set_menge(medicamente[i].get_menge()+m);//maresc cantitatea
-			cout << "Eingefugen!";
-			ok = true;
-			save_pos = i;
-			save_menge = m;
-			//salvez indicele si cantitatea pt ca imi vor trebui pt functiile de redo/undo
-		}
-		if (ok == false) //daca nu exista medicamentul resp., adaug un nou obiect de tipul Medikament
+		if ((medicamente[i].get_name() != name) && (medicamente[i].get_konz() != konz)) //daca nu exista medicamentul resp., adaug un nou obiect de tipul Medikament
 		{
 			cout << "Neues Produkt\n";
 			cout << "Welche Menge wollen Sie einfugen?\n";
 			int m;
 			cin >> m;
-			cout << "Welches Preis sollte das Medikament haben?";
+			cout << "Welches Preis soll das Medikament haben?";
 			int p;
 			cin >> p;
 			Medikament NeuesMed;
@@ -48,6 +31,20 @@ bool Stock::add_medicament(string name, double konz)
 			medicamente.push_back(NeuesMed); //am adaugat in vectorul de medicamente noul medicament
 			cout << "Eingefugen\n";
 			save_menge = m;
+			save_pos = i;
+		}
+		if (ok == false)//daca medicamentul exista, actualizez doar cantitatea
+		{
+			cout << "Der Medikament existiert schon\n";
+			cout << "Welche Menge wollen Sie einfugen?\n";
+			int m;
+			cin >> m;
+			medicamente[i].add_menge(m);//maresc cantitatea
+			cout << "Eingefugen!";
+			ok = true;
+			save_pos = i;
+			save_menge = m;
+			//salvez indicele si cantitatea pt ca imi vor trebui pt functiile de redo/undo
 		}
 	}
 	cout << "Wollen Sie Redo/Undo fur die vorige Operation machen?\n";
@@ -57,28 +54,27 @@ bool Stock::add_medicament(string name, double konz)
 	{
 		cout << "Redo->1 / Undo->2\n";
 		int d;
-		cin >>d;
+		cin >> d;
 		if (d == 1)//Redo 
 		{
 			//cresc cantitatea, indiferent daca initial am crescut cantitatea sau am adaugat un medicament nou, fiindca acum medicamentul exista sigur
-			medicamente[save_pos].set_menge(medicamente[save_pos].get_menge + save_menge);
+			medicamente[save_pos].add_menge(save_menge);
 			return true;
 		}
-		else //Undo
+		else if (d == 2)//daca fac Undo, sterg elementul inserat->return false
 		{
-			if (ok == true)//daca medicamentul exista, deci am modificat doar cantitatea, o sa scad acum cantitatea adaugata
-			{
-				medicamente[save_pos].set_menge(medicamente[save_pos].get_menge - save_menge);
-			}
-			else //trebuie sa sterg medicamentul nou adaugat
-			{
-				//functie stergere medicament
-			}
+			if (ok == false) //trebuie sa sterg medicamentul fiindca acesta nu exista inainte
+				medicamente.erase(medicamente.begin() + save_pos);
+			else //scad doar cantitatea
+				medicamente[save_pos].remove_menge(save_menge);
 			return false;
 		}
 	}
+	else
+		cout << "Ok, danke!\n";
 	return true;
 }
+
 
 bool Stock::remove_medicament(string name, double konz)
 {
@@ -103,10 +99,7 @@ bool Stock::remove_medicament(string name, double konz)
 					medicamente.erase(medicamente.begin() + i);
 					ok2 = true;
 				}
-				if (ok2 == true)
-					return;
-				else
-					i++;
+				i++;
 			}
 			else
 			{
@@ -114,7 +107,10 @@ bool Stock::remove_medicament(string name, double konz)
 			}
 		}
 		if (ok1 == false)
+		{
 			cout << "Der Medikament wurde nicht gefunden";
+			return false;
+		}
 	}
 
 	if (ok2 == true) //daca am sters medicamentul
@@ -127,6 +123,13 @@ bool Stock::remove_medicament(string name, double konz)
 		{
 			add_medicament(name, konz);
 			cout << "Medikament wurde zuruck eingefugt";
+			return false;
 		}
 	}
+	return true;
 } 
+
+
+Stock::~Stock()
+{
+}

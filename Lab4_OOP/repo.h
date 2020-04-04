@@ -6,10 +6,10 @@ using namespace std;
 
 class Stock
 {
-private:
-	vector<Medikament> medicamente;
 
 public:
+	vector <Medikament> medicamente;
+
 	Stock();
 	~Stock();
 
