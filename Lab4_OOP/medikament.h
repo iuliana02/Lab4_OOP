@@ -1,5 +1,6 @@
+#pragma once
 #include <string>
-#include <vector>
+#include <iostream>
 using namespace std;
 
 class Medikament
@@ -26,6 +27,7 @@ public:
 	void add_menge(int m);
 	void remove_menge(int m);
 
+	void afisare();
 
 	~Medikament();
 };

@@ -2,98 +2,154 @@
 #include <fstream>
 #include <string>
 #include "controller.h"
-#include "UI.h"
+//#include "UI.h"
 using namespace std;
 
-Controller::Controller() : Stock()
+Controller::Controller() : Repo()
 {
+	repo = Repo();
 }
 
-void Controller::add()
+bool Controller::is_empty()
 {
-	read_data(medicamente);
-	cout << "Name des Medikaments\n";
-	string name;
-	cin >> name;
-	cout << "Konzentration des Medikaments\n";
-	double konz;
-	cin >> konz;
-	bool ok = Stock::add_medicament(name, konz);
-	while (ok == false) //nu am adaugat inca medicament
+	if (repo.len == 0)
+		return true;
+	return false;
+}
+
+bool Controller::search(Medikament m)
+{
+	if (is_empty())
 	{
-		cout << "Name des Medikaments\n";
-		string name;
-		cin >> name;
-		cout << "Konzentration des Medikaments\n";
-		double konz;
-		cin >> konz;
-		bool ok = Stock::add_medicament(name, konz);
+		return false;
 	}
-	write_data(medicamente);
-}
-
-void Controller::remove()
-{
-	read_data(medicamente);
-	cout << "Name des Medikaments\n";
-	string name;
-	cin >> name;
-	cout << "Konzentration des Medikaments\n";
-	double konz;
-	cin >> konz;
-	bool ok = Stock::remove_medicament(name, konz);
-	while (ok == false) //nu am adaugat inca medicament
+	for (int i = 0; i < repo.len; ++i)
 	{
-		cout << "Name des Medikaments\n";
-		string name;
-		cin >> name;
-		cout << "Konzentration des Medikaments\n";
-		double konz;
-		cin >> konz;
-		bool ok = Stock::remove_medicament(name, konz);
+		if ((m.get_name() == repo.med[i].get_name()) && (m.get_konz() == repo.med[i].get_konz()))
+			return true;
 	}
-	write_data(medicamente);
+	return false;
 }
 
-
-void Controller:: read_data(vector <Medikament>& v)
+void Controller::add(Medikament m)
 {
-	fstream f;
-	f.open("data.txt");
-
-	string aux;
-	const string* aux2;
-	while (!f.eof())
+	if (search(m) == false)
 	{
-		Medikament med;
-		f >> aux;
-		med.set_name(aux);
-		f >> aux;
-		double konz = atof(aux.c_str());
-		med.set_konz(konz);
-		f >> aux;
-		int menge = stoi(aux);
-		med.set_menge(menge);
-		f >> aux;
-		double preis = atof(aux.c_str());
-		med.set_preis(preis);
-
-		v.push_back(med);
+		repo.med[repo.len] = m;
+		repo.len++;
+		if (repo.len == repo.capacity) 
+		{
+			//resize
+			repo.capacity *= 2;
+			Medikament* n = new Medikament[repo.capacity];
+			for (int i = 0; i < repo.len; ++i)
+				n[i] = repo.med[i];
+			delete repo.med;
+			repo.med = n;
+		}
 	}
-	v.erase(v.end() - 1);
-	f.close();
+	else //daca medicamentul exista deja, cresc doar cantitatea
+	{
+		for (int i = 0; i < repo.len; ++i)
+		{
+			if ((m.get_name() == repo.med[i].get_name()) && (m.get_konz() == repo.med[i].get_konz()))
+				repo.med[i].set_menge(repo.med[i].get_menge + m.get_menge());
+		}
+	}
+	cout << repo.len << endl;
+	action a;
+	a.act = 1;
+	a.m = m;
+	istoric_undo.push_back(a);
 }
 
-void Controller:: write_data(vector <Medikament> v)
+void Controller::undo_add(Medikament m)
 {
-	fstream f;
-	f.open("data.txt");
-
-	for (int i = 0; i <= v.size(); i++)
-		f << v[i].get_name() << " " << v[i].get_konz() << " " << v[i].get_menge() << " " << v[i].get_preis() << endl;
-	f.close();
+	if (search(m) == false)
+	{
+		repo.med[repo.len] = m;
+		repo.len++;
+		if (repo.len == repo.capacity) //container full
+		{
+			repo.capacity *= 2;
+			Medikament* n = new Medikament[repo.capacity];
+			for (int i = 0; i < repo.len; ++i)
+				n[i] = repo.med[i];
+			delete repo.med;
+			repo.med = n;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < repo.len; ++i)
+			if ((m.get_name() == repo.med[i].get_name()) && (m.get_konz() == repo.med[i].get_konz()))
+				repo.med[i].set_menge(repo.med[i].get_menge() + m.get_menge());
+	}
+	action a;
+	a.act = 1;
+	a.m = m;
+	istoric_redo.push_back(a);
 }
+
+void Controller::remove(Medikament m)
+{
+	if (is_empty())
+	{
+		cout << "Apotheke leer\n";
+		return;
+	}
+	if (search(m) == false)
+	{
+		cout << "Dieser Medikament existiert nicht.\n";
+		return;
+	}
+	Medikament n;
+	for (int i = 0; i < repo.len; ++i)
+	{
+		if ((m.get_name() == repo.med[i].get_name()) && (m.get_konz() == repo.med[i].get_konz()))
+		{
+			m = repo.med[i];
+			for (int k = i + 1; k < repo.len; ++k)
+				repo.med[k - 1] = repo.med[k];
+			repo.len--;
+		}
+	}
+	action a;
+	a.act = 3;
+	a.m = n;
+	istoric_undo.push_back(a);
+}
+
+void Controller::undo_remove(Medikament m)
+{
+	if (is_empty())
+	{
+		cout << "Apotheke leer\n";
+		return;
+	}
+	if (search(m) == false)
+	{
+		cout << "Dieser Medikament existiert nicht\n";
+		return;
+	}
+	for (int i = 0; i < repo.len; ++i)
+	{
+		if ((m.get_name() == repo.med[i].get_name()) && (m.get_konz() == repo.med[i].get_konz()))
+		{
+			for (int k = i + 1; k < repo.len; k++)
+				repo.med[k - 1] = repo.med[k];
+			repo.len--;
+		}
+	}
+	action a;
+	a.act = 3;
+	a.m = m;
+	istoric_redo.push_back(a);
+}
+
+
 
 Controller::~Controller()
 {
+	delete repo.med;
 }

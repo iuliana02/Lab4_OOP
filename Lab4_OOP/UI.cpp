@@ -13,17 +13,19 @@ UI::~UI()
 void UI:: meniu()
 {
 	cout << "\tSmile Apotheke\n";
-	cout << "Medikament einfugen\n" << "Medikament loschen\n" << "Medikament bearbeiten\n";
-	cout << "Gruppieren nach einem String\n";
-	cout << "Medikamente knapper als...\n";
-	cout << "Gruppieren nach Preis\n";
-	cout << endl;
+	cout << "1 - Medikament einfugen\n" << "2 - Medikament loschen\n" << "3 - Medikament bearbeiten\n";
+	cout << "4 - Gruppieren nach einem String\n";
+	cout << "5 - Medikamente knapper als...\n";
+	cout << "6 - Gruppieren nach Preis\n";
+	cout << "7 - Undo\n";
+	cout << "8 - Redo\n";
+	cout << "0 - Exit"<<endl;
 
 }
 
 void UI::functii()
 {
-	Controller::add();
-	Controller::remove();
+
 }
+
 

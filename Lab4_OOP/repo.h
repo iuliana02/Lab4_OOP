@@ -4,15 +4,18 @@
 #include "medikament.h"
 using namespace std;
 
-class Stock
+class Repo
 {
+	friend class Controller;
+
+private:
+	Medikament* med;
+	int capacity, len;
 
 public:
-	vector <Medikament> medicamente;
 
-	Stock();
-	~Stock();
+	Repo();
+	~Repo();
 
-	bool add_medicament(string name, double konz);
-	bool remove_medicament(string name, double konz);
+	void show();
 };
