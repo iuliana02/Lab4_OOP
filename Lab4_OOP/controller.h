@@ -27,7 +27,7 @@ public:
 
 	void show(string s);
 
-	void knappe_menge();
+	void knappe_menge(int menge);
 	
 	void sort_nach_preis();
 
