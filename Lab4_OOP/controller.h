@@ -1,5 +1,6 @@
 #pragma once
 #include "repo.h"
+#include <iostream>
 
 struct action
 {
@@ -7,8 +8,9 @@ struct action
 	int act;
 };
 
-class Controller : public Repo
+class Controller 
 {
+	friend class UI;
 private:
 	Repo repo;
 	vector <action> istoric_undo;

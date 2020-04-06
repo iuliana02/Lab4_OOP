@@ -1,7 +1,8 @@
 #pragma once
+#include <iostream>
 #include "controller.h"
 
-class UI : public Controller
+class UI 
 {
 public:
 	//constructor

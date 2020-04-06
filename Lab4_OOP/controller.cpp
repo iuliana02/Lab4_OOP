@@ -6,7 +6,7 @@
 //#include "UI.h"
 using namespace std;
 
-Controller::Controller() : Repo()
+Controller::Controller() 
 {
 	repo = Repo();
 }
@@ -54,7 +54,7 @@ void Controller::add(Medikament m)
 		for (int i = 0; i < repo.len; ++i)
 		{
 			if ((m.get_name() == repo.med[i].get_name()) && (m.get_konz() == repo.med[i].get_konz()))
-				repo.med[i].set_menge(repo.med[i].get_menge + m.get_menge());
+				repo.med[i].set_menge(repo.med[i].get_menge() + m.get_menge());
 		}
 	}
 	cout << repo.len << endl;
