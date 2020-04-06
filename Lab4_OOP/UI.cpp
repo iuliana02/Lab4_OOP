@@ -25,6 +25,22 @@ void UI:: meniu()
 
 void UI::functii()
 {
+	Controller ctrl = Controller();
+	while (true)
+	{
+		meniu();
+
+		int optiune;
+		cout << "Alegeti optiunea: \n";
+		cin >> optiune;
+		switch (optiune)
+		{
+		case 1:
+		{
+			
+		}
+		}
+	}
 
 }
 
