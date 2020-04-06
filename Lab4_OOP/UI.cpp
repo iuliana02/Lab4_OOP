@@ -37,8 +37,82 @@ void UI::functii()
 		{
 		case 1:
 		{
-			
+			string name;
+			int menge;
+			float konzentration, preis;
+			cout << "Adaugati medicament\n" << "Nume: ";
+			cin >> name;
+			cout<< "Cantitate: ";
+			cin >> menge;
+			cout << "Concentratie: ";
+			cin >> konzentration;
+			cout << " Pret: ";
+			cin >> preis;
+			Medikament m = Medikament(name, konzentration, menge, preis);
+			ctrl.add(m);
+			break;
 		}
+		case 2:
+		{
+			string name;
+			int menge = 0;
+			float konzentration, preis = 0;
+			cout << "Medicamentul pentru sters\n " << " Nume: ";
+			cin >> name;
+			cout << "Concentratie: ";
+			cin >> konzentration;
+			Medikament m= Medikament(name, konzentration, menge, preis);
+			ctrl.remove(m);
+			break;
+		}
+		case 3:
+		{
+			string name;
+			int menge = 0;
+			float konzentration, preis = 0;
+			cout << "Schimbati medicamentul\n " << " Nume: ";
+			cin >> name;
+			cout << "Concentratie: ";
+			cin >> konzentration;
+			Medikament m = Medikament(name, konzentration, menge, preis);
+			ctrl.modify(m);
+			break;
+		}
+		case 4:
+		{
+			string s;
+			cout << "Introduceti medicamentul pe care il cautati: ";
+			cin >> s;
+			ctrl.show(s);
+			break;
+		}
+		case 5:
+		{
+			cout << "Ïntroduceti cantitate: ";
+			int menge;
+			cin >> menge;
+			ctrl.knappe_menge(menge);
+			break;
+		}
+		case 6:
+		{
+			ctrl.sort_nach_preis();
+			break;
+		}
+		case 7:
+		{
+			ctrl.undo();
+			cout << "Operatia de undo a reusit. " << endl;
+			break;
+		}
+		case 8:
+		{
+			ctrl.redo();
+			cout << "Operatia de redo a reusit." << endl;
+			break;
+		}
+		default:
+			return;
 		}
 	}
 
